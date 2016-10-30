@@ -6,11 +6,18 @@
   "directories": {
     "doc": "docs"
   },
+  "watch": {
+    "dev": "{src}/*.html",
+    "build:js": "{src}/**/*.js"
+  },
   "scripts": {
-    "build": "npm run build:clean && npm run build:html",
-    "build:clean": "rm -rf docs/*",
-    "build:html": "cp -r src/index.html docs/",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run watch &",
+    "build": "npm-run-all build:clean build:html build:css build:js",
+    "build:clean": "rm -rf ./docs/*",
+    "build:html": "cp -r ./src/*.html ./docs/",
+    "build:css": "cp -r ./src/*.css ./docs/",
+    "build:js": "browserify ./src/app.js -o ./docs/bundle.js",
+    "test": "mocha ./test/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -26,5 +33,13 @@
   "bugs": {
     "url": "https://github.com/csukcc/finance-calc/issues"
   },
-  "homepage": "https://github.com/csukcc/finance-calc#readme"
+  "homepage": "https://github.com/csukcc/finance-calc#readme",
+  "devDependencies": {
+    "browserify": "^13.1.1",
+    "chai": "^3.5.0",
+    "mocha": "^3.1.2",
+    "npm-run-all": "^3.1.1",
+    "npm-watch": "^0.1.6",
+    "rewired": "^1.0.7"
+  }
 }

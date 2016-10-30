@@ -1,13 +1,104 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Financial Calculator - UK</title>
-    </head>
-    <body>
-        <h1>Title</h1>
-        <p>
-            Body goes here...
-        </p>
-    </body>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Finance Calculator - UK</title>
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <!-- App CSS -->
+    <link rel="stylesheet" href="stylesheet.css" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills pull-right">
+                        <li role="presentation">
+                            <a href="https://github.com/csukcc/finance-calc">
+                                <i class="fa fa-github" aria-hidden="true"></i> Github
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <h3 class="text-muted">Finance Calculator UK</h3>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <form>
+                        <div class="form-group">
+                            <h4>Tax Year 2016/17</h4>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="wage">Annual gross wage</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">£</span>
+                                        <input id="wage" type="text" class="form-control" aria-label="Amount (to the nearest pounds)" v-model="wage">
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pension">Pension contribution</label>
+                                    <div class="input-group">
+                                        <input id="pension" type="text" class="form-control" aria-label="Amount (to the nearest pounds)" v-model="pension">
+                                        <span class="input-group-addon">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" v-model="hasToPayStudentLoan"> I need to pay Student Loan
+                            </label>
+                        </div>
+                        <div class="checkbox" v-if="hasToPayStudentLoan">
+                            <label>
+                                <input type="checkbox" v-model="courseBefore2012"> My course began before Sept 2012
+                            </label>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="button" class="btn btn-primary" v-on:click="calculateWage">Calculate</button>
+                        </div>
+                    </form>
+                    <table class="table table-hover table-bordered" v-if="showResults">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th class="text-center">Year</th>
+                                <th class="text-center">Month</th>
+                                <th class="text-center">Week</th>
+                                <th class="text-center">Day</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in results" v-bind:class="[item.style]">
+                                <th>{{item.name}}</th>
+                                <td class="text-center">{{item.prefix + item.year}}</td>
+                                <td class="text-center">{{item.prefix + item.month}}</td>
+                                <td class="text-center">{{item.prefix + item.week}}</td>
+                                <td class="text-center">{{item.prefix + item.day}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://unpkg.com/vue@2.0.3/dist/vue.js"></script>
+    <!-- App JS -->
+    <script src="bundle.js"></script>
+</body>
+
 </html>

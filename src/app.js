@@ -22,6 +22,13 @@ var app = new Vue({
                 this.results[i].day = (this.results[i].week / 5).toFixed(2);
             }
         },
+        getStudentLoanPaymentPlan: function () {
+            if (this.hasToPayStudentLoan) {
+                return sharedMethods.calcStudentLoan(this.courseBefore2012, this.wage)
+            } else {
+                return 0;
+            }
+        },
         calculateWage: function() {
             this.results = [{
                 name: 'Gross Income',
@@ -42,12 +49,12 @@ var app = new Vue({
                 name: 'Student Loan',
                 prefix: '-£',
                 style: 'danger',
-                year: 0
+                year: this.getStudentLoanPaymentPlan()
             }, {
                 name: 'Pension',
                 prefix: '-£',
                 style: 'danger',
-                year: 0
+                year: (this.wage * this.pension / 100).toFixed(2)
             }, {
                 name: 'Net Income',
                 prefix: '£',

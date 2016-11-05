@@ -37,6 +37,17 @@ var sharedMethods = {
     },
     calcTaxBands: function(taxble, amount, rate) {
         return parseFloat(((taxble - amount) * rate).toFixed(2))
+    },
+    calcStudentLoan: function (courseBefore2012, wage) {
+        var rate = CONFIG.studentLoan.plan1.rate,
+            threshold = CONFIG.studentLoan.plan1.threshold;
+
+        if (courseBefore2012 === false) {
+            rate = CONFIG.studentLoan.plan2.rate;
+            threshold = CONFIG.studentLoan.plan2.threshold;
+        }
+
+        return ((wage - threshold) * rate).toFixed(2);
     }
 }
 

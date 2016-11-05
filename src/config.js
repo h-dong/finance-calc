@@ -20,6 +20,16 @@ var CONFIG = {
             startPoint: 100000,
             rateOfDecrease: 0.5
         }
+    },
+    studentLoan: {
+        plan1: {
+            rate: 0.09,
+            threshold: 17495
+        },
+        plan2: {
+            rate: 0.09,
+            threshold: 21000
+        }
     }
 }
 

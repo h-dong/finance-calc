@@ -23,6 +23,13 @@ var app = new Vue({
                 this.results[i].day = (this.results[i].week / 5).toFixed(2);
             }
         },
+        getStudentLoanPaymentPlan: function () {
+            if (this.hasToPayStudentLoan) {
+                return sharedMethods.calcStudentLoan(this.courseBefore2012, this.wage)
+            } else {
+                return 0;
+            }
+        },
         calculateWage: function() {
             this.results = [{
                 name: 'Gross Income',
@@ -43,12 +50,12 @@ var app = new Vue({
                 name: 'Student Loan',
                 prefix: '-£',
                 style: 'danger',
-                year: 0
+                year: this.getStudentLoanPaymentPlan()
             }, {
                 name: 'Pension',
                 prefix: '-£',
                 style: 'danger',
-                year: 0
+                year: (this.wage * this.pension / 100).toFixed(2)
             }, {
                 name: 'Net Income',
                 prefix: '£',
@@ -83,6 +90,16 @@ var CONFIG = {
         noPersonalAllowance: {
             startPoint: 100000,
             rateOfDecrease: 0.5
+        }
+    },
+    studentLoan: {
+        plan1: {
+            rate: 0.09,
+            threshold: 17495
+        },
+        plan2: {
+            rate: 0.09,
+            threshold: 21000
         }
     }
 }
@@ -129,6 +146,17 @@ var sharedMethods = {
     },
     calcTaxBands: function(taxble, amount, rate) {
         return parseFloat(((taxble - amount) * rate).toFixed(2))
+    },
+    calcStudentLoan: function (courseBefore2012, wage) {
+        var rate = CONFIG.studentLoan.plan1.rate,
+            threshold = CONFIG.studentLoan.plan1.threshold;
+
+        if (courseBefore2012 === false) {
+            rate = CONFIG.studentLoan.plan2.rate;
+            threshold = CONFIG.studentLoan.plan2.threshold;
+        }
+
+        return ((wage - threshold) * rate).toFixed(2);
     }
 }
 

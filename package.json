@@ -11,12 +11,13 @@
     "build:js": "{src}/**/*.js"
   },
   "scripts": {
-    "dev": "npm run watch &",
+    "dev": "npm-run-all build:clean build:html build:css watch:js",
     "build": "npm-run-all build:clean build:html build:css build:js",
     "build:clean": "rm -rf ./docs/*",
     "build:html": "cp -r ./src/*.html ./docs/",
     "build:css": "cp -r ./src/*.css ./docs/",
     "build:js": "browserify ./src/app.js -o ./docs/bundle.js",
+    "watch:js": "watchify ./src/app.js -o ./docs/bundle.js -v",
     "test": "mocha ./test/**/*.js"
   },
   "repository": {
@@ -39,7 +40,7 @@
     "chai": "^3.5.0",
     "mocha": "^3.1.2",
     "npm-run-all": "^3.1.1",
-    "npm-watch": "^0.1.6",
-    "rewired": "^1.0.7"
+    "rewired": "^1.0.7",
+    "watchify": "^3.7.0"
   }
 }

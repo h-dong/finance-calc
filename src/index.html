@@ -79,26 +79,28 @@
                             <button type="submit" class="btn btn-primary">Calculate</button>
                         </div>
                     </form>
-                    <table class="table table-hover table-bordered" v-if="showResults">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th class="text-center">Year</th>
-                                <th class="text-center">Month</th>
-                                <th class="text-center">Week</th>
-                                <th class="text-center">Day</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item in results" v-bind:class="[item.style]">
-                                <th>{{item.name}}</th>
-                                <td class="text-center">{{item.prefix + item.year}}</td>
-                                <td class="text-center">{{item.prefix + item.month}}</td>
-                                <td class="text-center">{{item.prefix + item.week}}</td>
-                                <td class="text-center">{{item.prefix + item.day}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive" v-if="showResults">
+                        <table class="table table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th class="text-center">Year</th>
+                                    <th class="text-center">Month</th>
+                                    <th class="text-center">Week</th>
+                                    <th class="text-center">Day</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in results" v-bind:class="[item.style]">
+                                    <th>{{item.name}}</th>
+                                    <td class="text-center">{{item.prefix + item.year}}</td>
+                                    <td class="text-center">{{item.prefix + item.month}}</td>
+                                    <td class="text-center">{{item.prefix + item.week}}</td>
+                                    <td class="text-center">{{item.prefix + item.day}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

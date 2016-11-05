@@ -4,79 +4,100 @@ var sharedMethods = require('./sharedMethods');
 var app = new Vue({
     el: '#app',
     data: {
-        wage: 160000,
-        pension: 2,
-        hasToPayStudentLoan: false,
+        wage: 0,
+        pension: 0,
+        hasToPayStudentLoan: true,
         courseBefore2012: false,
         showResults: false,
         results: []
+    },
+    computed: {
+        validation: function() {
+            return {
+                wage: !!(this.wage >= 0),
+                pension: !!(this.pension >= 0 && this.pension <= 100)
+            };
+        },
+        isValid: function() {
+            var validation = this.validation;
+            return Object.keys(validation).every(function(key) {
+                return validation[key];
+            });
+        }
     },
     methods: {
         calcMonthWeekDay: function() {
             this.updateNetIncome();
 
             for (var i = 0; i < this.results.length; i++) {
-                if (this.results[i].year === 0 && this.results[i].prefix == '-£') {
+                if (this.results[i].year == 0.00 && this.results[i].prefix == '-£') {
                     this.results[i].prefix = '£';
                     this.results[i].style = '';
+
+                    this.results[i].year = '0.00';
+                    this.results[i].month = '0.00';
+                    this.results[i].week = '0.00';
+                    this.results[i].day = '0.00';
+                } else {
+                    this.results[i].month = (this.results[i].year / 12).toFixed(2);
+                    this.results[i].week = (this.results[i].month / 4).toFixed(2);
+                    this.results[i].day = (this.results[i].week / 5).toFixed(2);
                 }
-                this.results[i].month = (this.results[i].year / 12).toFixed(2);
-                this.results[i].week = (this.results[i].month / 4).toFixed(2);
-                this.results[i].day = (this.results[i].week / 5).toFixed(2);
             }
         },
-        getStudentLoanPaymentPlan: function () {
+        getStudentLoanPaymentPlan: function() {
             if (this.hasToPayStudentLoan) {
-                return sharedMethods.calcStudentLoan(this.courseBefore2012, this.wage)
+                return sharedMethods.calcStudentLoan(this.courseBefore2012, this.wage);
             } else {
-                return 0;
+                return 0.00;
             }
         },
-        updateNetIncome: function () {
+        updateNetIncome: function() {
             var totalTax = 0,
                 resultsArray = this.results;
 
             for (var i = 1; i < (resultsArray.length - 1); i++) {
-                console.log(resultsArray[i].year);
                 totalTax += Number(resultsArray[i].year);
             }
 
-            this.results[resultsArray.length - 1].year = this.wage - totalTax;
+            this.results[resultsArray.length - 1].year = (this.wage - totalTax).toFixed(2);
         },
         calculateWage: function() {
-            this.results = [{
-                name: 'Gross Income',
-                prefix: '£',
-                style: 'success',
-                year: this.wage
-            }, {
-                name: 'Income Tax',
-                prefix: '-£',
-                style: 'danger',
-                year: sharedMethods.calcIncomeTax(this.wage)
-            }, {
-                name: 'National Insurance',
-                prefix: '-£',
-                style: 'danger',
-                year: 0
-            }, {
-                name: 'Student Loan',
-                prefix: '-£',
-                style: 'danger',
-                year: this.getStudentLoanPaymentPlan()
-            }, {
-                name: 'Pension',
-                prefix: '-£',
-                style: 'danger',
-                year: (this.wage * this.pension / 100).toFixed(2)
-            }, {
-                name: 'Net Income',
-                prefix: '£',
-                style: 'info',
-                year: 0
-            }];
-            this.calcMonthWeekDay();
-            this.showResults = true;
+            if (this.isValid) {
+                this.results = [{
+                    name: 'Gross Income',
+                    prefix: '£',
+                    style: 'success',
+                    year: (Number(this.wage)).toFixed(2)
+                }, {
+                    name: 'Income Tax',
+                    prefix: '-£',
+                    style: 'danger',
+                    year: sharedMethods.calcIncomeTax(this.wage)
+                }, {
+                    name: 'National Insurance',
+                    prefix: '-£',
+                    style: 'danger',
+                    year: sharedMethods.calcNationalInsurance(this.wage)
+                }, {
+                    name: 'Student Loan',
+                    prefix: '-£',
+                    style: 'danger',
+                    year: this.getStudentLoanPaymentPlan()
+                }, {
+                    name: 'Pension',
+                    prefix: '-£',
+                    style: 'danger',
+                    year: (this.wage * this.pension / 100).toFixed(2)
+                }, {
+                    name: 'Net Income',
+                    prefix: '£',
+                    style: 'info',
+                    year: 0
+                }];
+                this.calcMonthWeekDay();
+                this.showResults = true;
+            }
         }
     }
 })
@@ -105,6 +126,20 @@ var CONFIG = {
             rateOfDecrease: 0.5
         }
     },
+    nationalInsurance: {
+        basic: {
+            threshold: 8060,
+            rate: 0
+        },
+        medium: {
+            threshold: 43000,
+            rate: 0.12
+        },
+        high: {
+            threshold: Infinity,
+            rate: 0.02
+        }
+    },
     studentLoan: {
         plan1: {
             rate: 0.09,
@@ -123,9 +158,9 @@ module.exports = CONFIG;
 var CONFIG = require('./config');
 
 var sharedMethods = {
-    calcIncomeTax:function(wage) {
+    calcIncomeTax: function(wage) {
         var remainingWage = wage,
-            tax = 0,
+            tax = 0.00,
             personalAllowance = CONFIG.tax.personalAllowance,
             basic = CONFIG.tax.basic,
             high = CONFIG.tax.high,
@@ -155,13 +190,33 @@ var sharedMethods = {
                 tax += this.calcTaxBands(0, personalAllowance.taxable - allowance, high.rate);
             }
         }
-        return Math.abs(tax);
+
+        return this.convertNumber(tax);
     },
     calcTaxBands: function(taxble, amount, rate) {
-        return parseFloat(((taxble - amount) * rate).toFixed(2))
+        return (taxble - amount) * rate;
     },
-    calcStudentLoan: function (courseBefore2012, wage) {
-        var rate = CONFIG.studentLoan.plan1.rate,
+    calcNationalInsurance: function(wage) {
+        var remainingWage = wage,
+            NI = 0,
+            basic = CONFIG.nationalInsurance.basic,
+            medium = CONFIG.nationalInsurance.medium,
+            high = CONFIG.nationalInsurance.high;
+
+        if (remainingWage > medium.threshold) {
+            NI += (remainingWage - medium.threshold) * high.rate;
+            remainingWage = medium.threshold;
+        }
+
+        if (remainingWage <= medium.threshold && remainingWage > basic.threshold) {
+            NI += (remainingWage - basic.threshold) * medium.rate;
+        }
+
+        return this.convertNumber(NI);
+    },
+    calcStudentLoan: function(courseBefore2012, wage) {
+        var studentLoan = 0,
+            rate = CONFIG.studentLoan.plan1.rate,
             threshold = CONFIG.studentLoan.plan1.threshold;
 
         if (courseBefore2012 === false) {
@@ -169,7 +224,16 @@ var sharedMethods = {
             threshold = CONFIG.studentLoan.plan2.threshold;
         }
 
-        return ((wage - threshold) * rate).toFixed(2);
+        if (wage > threshold) {
+            studentLoan = this.convertNumber((wage - threshold) * rate);
+        } else {
+            studentLoan = 0.00;
+        }
+
+        return studentLoan;
+    },
+    convertNumber: function(value) {
+        return parseFloat(Math.abs(value.toFixed(2)));
     }
 }
 

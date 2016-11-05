@@ -1,9 +1,9 @@
 var CONFIG = require('./config');
 
 var sharedMethods = {
-    calcIncomeTax:function(wage) {
+    calcIncomeTax: function(wage) {
         var remainingWage = wage,
-            tax = 0,
+            tax = 0.00,
             personalAllowance = CONFIG.tax.personalAllowance,
             basic = CONFIG.tax.basic,
             high = CONFIG.tax.high,
@@ -33,13 +33,33 @@ var sharedMethods = {
                 tax += this.calcTaxBands(0, personalAllowance.taxable - allowance, high.rate);
             }
         }
-        return Math.abs(tax);
+
+        return this.convertNumber(tax);
     },
     calcTaxBands: function(taxble, amount, rate) {
-        return parseFloat(((taxble - amount) * rate).toFixed(2))
+        return (taxble - amount) * rate;
     },
-    calcStudentLoan: function (courseBefore2012, wage) {
-        var rate = CONFIG.studentLoan.plan1.rate,
+    calcNationalInsurance: function(wage) {
+        var remainingWage = wage,
+            NI = 0,
+            basic = CONFIG.nationalInsurance.basic,
+            medium = CONFIG.nationalInsurance.medium,
+            high = CONFIG.nationalInsurance.high;
+
+        if (remainingWage > medium.threshold) {
+            NI += (remainingWage - medium.threshold) * high.rate;
+            remainingWage = medium.threshold;
+        }
+
+        if (remainingWage <= medium.threshold && remainingWage > basic.threshold) {
+            NI += (remainingWage - basic.threshold) * medium.rate;
+        }
+
+        return this.convertNumber(NI);
+    },
+    calcStudentLoan: function(courseBefore2012, wage) {
+        var studentLoan = 0,
+            rate = CONFIG.studentLoan.plan1.rate,
             threshold = CONFIG.studentLoan.plan1.threshold;
 
         if (courseBefore2012 === false) {
@@ -47,7 +67,16 @@ var sharedMethods = {
             threshold = CONFIG.studentLoan.plan2.threshold;
         }
 
-        return ((wage - threshold) * rate).toFixed(2);
+        if (wage > threshold) {
+            studentLoan = this.convertNumber((wage - threshold) * rate);
+        } else {
+            studentLoan = 0.00;
+        }
+
+        return studentLoan;
+    },
+    convertNumber: function(value) {
+        return parseFloat(Math.abs(value.toFixed(2)));
     }
 }
 

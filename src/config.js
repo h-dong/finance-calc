@@ -21,6 +21,20 @@ var CONFIG = {
             rateOfDecrease: 0.5
         }
     },
+    nationalInsurance: {
+        basic: {
+            threshold: 8060,
+            rate: 0
+        },
+        medium: {
+            threshold: 43000,
+            rate: 0.12
+        },
+        high: {
+            threshold: Infinity,
+            rate: 0.02
+        }
+    },
     studentLoan: {
         plan1: {
             rate: 0.09,

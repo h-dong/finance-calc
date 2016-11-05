@@ -13,6 +13,8 @@ var app = new Vue({
     },
     methods: {
         calcMonthWeekDay: function() {
+            this.updateNetIncome();
+
             for (var i = 0; i < this.results.length; i++) {
                 if (this.results[i].year === 0 && this.results[i].prefix == '-£') {
                     this.results[i].prefix = '£';
@@ -29,6 +31,17 @@ var app = new Vue({
             } else {
                 return 0;
             }
+        },
+        updateNetIncome: function () {
+            var totalTax = 0,
+                resultsArray = this.results;
+
+            for (var i = 1; i < (resultsArray.length - 1); i++) {
+                console.log(resultsArray[i].year);
+                totalTax += Number(resultsArray[i].year);
+            }
+
+            this.results[resultsArray.length - 1].year = this.wage - totalTax;
         },
         calculateWage: function() {
             this.results = [{

@@ -3,7 +3,7 @@ A web application written in Javascript using VueJS framework.
 
 This is designed to be a financial calculator for calculating take home salary, student loan, mortgages and etc.
 
-[View demo](//haodong.io/finance-calc/)
+[View demo](https://haodong.io/finance-calc/)
 
 # Getting started
 

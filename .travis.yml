@@ -7,6 +7,9 @@ install:
 
 script:
   - npm test
+  - npm run build
 
 cache:
   yarn: true
+  directories:
+    - node_modules

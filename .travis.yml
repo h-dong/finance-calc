@@ -3,13 +3,8 @@ node_js:
   - "5.9.0"
 
 install:
-  - yarn
+  - npm install
 
 script:
   - npm test
   - npm run build
-
-cache:
-  yarn: true
-  directories:
-    - node_modules

@@ -1,4 +1,4 @@
-# Personal Finance Calculator (UK)
+# Personal Finance Calculator (UK) [![Build Status](https://travis-ci.org/hdong92/finance-calc.svg?branch=master)](https://travis-ci.org/hdong92/finance-calc)
 A web application written in Javascript using VueJS framework.
 
 This is designed to be a financial calculator for calculating take home salary, student loan, mortgages and etc.

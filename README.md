@@ -33,7 +33,7 @@ $ npm run dev
 
 ### Publish
 
-In order to publish to `https://csukcc.github.io/finance-calc/` run the following command.
+In order to publish to `username.github.io/finance-calc/` run the following command.
 
 ```
 $ npm run build

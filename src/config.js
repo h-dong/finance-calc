@@ -1,11 +1,11 @@
 var CONFIG = {
     tax: {
         personalAllowance: {
-            taxable: 11500,
+            taxable: 11850,
             rate: 0
         },
         basic: {
-            taxable: 45000,
+            taxable: 46350,
             rate: 0.2
         },
         high: {
@@ -23,11 +23,11 @@ var CONFIG = {
     },
     nationalInsurance: {
         basic: {
-            threshold: 8160,
+            threshold: 8424,
             rate: 0
         },
         medium: {
-            threshold: 45000,
+            threshold: 46350,
             rate: 0.12
         },
         high: {
@@ -38,11 +38,11 @@ var CONFIG = {
     studentLoan: {
         plan1: {
             rate: 0.09,
-            threshold: 17775
+            threshold: 18330
         },
         plan2: {
             rate: 0.09,
-            threshold: 21000
+            threshold: 25000
         }
     }
 }
